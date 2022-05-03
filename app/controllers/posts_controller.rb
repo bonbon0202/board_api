@@ -7,14 +7,19 @@ class PostsController < ApplicationController
     search_text = params[:search_text] || ''
     page = params[:page] || 1
     limit = params[:limit] || 10
-  
-    @posts = Post.order(sort).where(category + " LIKE ?", category == "title" ? "%#{params[:search_text]}%" : params[:search_text])
-    # TODO : max_page 추가
-    # max_page = (@posts.length() / limit.to_i).floor + 1
+
+    @posts = Post.order(sort)
+    
+    case category
+    when 'title'
+      @posts = @posts.where("title LIKE ?", "%#{search_text}%")
+    when 'writer'
+      @posts = @posts.where(writer: search_text)
+    end
     
     @pagy, @posts = pagy(@posts, items: limit)
 
-    render json: @posts, only: [:id, :title, :content, :writer]
+    render json: @posts
   end
 
   def show
@@ -47,7 +52,7 @@ class PostsController < ApplicationController
 
   private
     def set_post
-      @post = Post.find(params[:id])
+      @post = Post.includes(:comments).find(params[:id])
     end
 
     def post_params
