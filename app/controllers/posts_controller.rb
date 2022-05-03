@@ -3,14 +3,14 @@ class PostsController < ApplicationController
 
   def index
     sort = params[:sort] || 'created_at DESC'
-    type = params[:type] || 'title'
+    search_type = params[:search_type] || 'title'
     search_text = params[:search_text] || ''
     page = params[:page] || 1
     limit = params[:limit] || 10
 
     @posts = Post.order(sort)
     
-    case type
+    case search_type
     when 'title'
       @posts = @posts.where("title LIKE ?", "%#{search_text}%")
     when 'writer'
@@ -19,7 +19,7 @@ class PostsController < ApplicationController
 
     @pagy, @posts = pagy(@posts, items: limit)
 
-    render json: @posts, each_serializer: PostSerializer
+    render json: @posts, meta: {current_page: @pagy.page, max_page: @pagy.last }, adapter: :json, each_serializer: PostSerializer
   end
 
   def show
@@ -38,7 +38,7 @@ class PostsController < ApplicationController
 
   def update
     if @post.update(post_params)
-      render json: 'post updated'
+      render json: { message: 'post updated' }
     else
       render json: @post.errors, status: :unprocessable_entity
     end
@@ -47,7 +47,7 @@ class PostsController < ApplicationController
   def destroy
     @post.destroy
 
-    render json: 'post deleted'
+    render json: { message: 'post deleted' }
   end
 
   private

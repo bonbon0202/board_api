@@ -18,7 +18,7 @@ class CommentsController < ApplicationController
 
   def update
     if @comment.update(comment_params)
-      render json: 'comment updated'
+      render json: { message: 'comment updated' }
     else
       render json: @comment.errors, status: :unprocessable_entity
     end
@@ -27,7 +27,7 @@ class CommentsController < ApplicationController
   def destroy
     @comment.destroy
 
-    render json: 'comment deleted'
+    render json: { message: 'comment deleted' }
   end
 
   private
