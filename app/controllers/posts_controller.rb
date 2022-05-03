@@ -16,14 +16,14 @@ class PostsController < ApplicationController
     when 'writer'
       @posts = @posts.where(writer: search_text)
     end
-    
+
     @pagy, @posts = pagy(@posts, items: limit)
 
-    render json: @posts
+    render json: @posts, each_serializer: PostSerializer
   end
 
   def show
-    render json: @post
+    render json: @post, serializer: DetailPostSerializer
   end
 
   def create
