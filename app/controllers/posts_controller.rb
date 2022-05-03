@@ -38,7 +38,7 @@ class PostsController < ApplicationController
 
   def update
     if @post.update(post_params)
-      render json: @post
+      render json: 'post updated'
     else
       render json: @post.errors, status: :unprocessable_entity
     end
@@ -47,7 +47,7 @@ class PostsController < ApplicationController
   def destroy
     @post.destroy
 
-    render json: @posts
+    render json: 'post deleted'
   end
 
   private
