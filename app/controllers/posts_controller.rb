@@ -3,14 +3,14 @@ class PostsController < ApplicationController
 
   def index
     sort = params[:sort] || 'created_at DESC'
-    category = params[:category] || 'title'
+    type = params[:type] || 'title'
     search_text = params[:search_text] || ''
     page = params[:page] || 1
     limit = params[:limit] || 10
 
     @posts = Post.order(sort)
     
-    case category
+    case type
     when 'title'
       @posts = @posts.where("title LIKE ?", "%#{search_text}%")
     when 'writer'
